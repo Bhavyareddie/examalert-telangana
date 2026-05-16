@@ -344,7 +344,7 @@ function ExamForm({ exam, onSave, onCancel }: { exam: Exam | null; onSave: (data
             Trending
           </label>
           <div>
-            <select value={form.exam_status} onChange={e => setForm(p => ({ ...p, exam_status: e.target.value }))}
+            <select value={form.exam_status} onChange={e => setForm(p => ({ ...p, exam_status: e.target.value as any }))}
               className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 outline-none">
               <option value="live">🟢 Live</option>
               <option value="expected">🟡 Expected</option>
