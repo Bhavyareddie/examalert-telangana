@@ -3,7 +3,7 @@ import type { Exam } from '@/types';
 
 async function getTrendingExams(): Promise<Exam[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/exams/trending`, {
+    const res = await fetch(`https://examalert-telangana.onrender.com/api/exams/trending`, {
       next: { revalidate: 300 },
     });
     if (!res.ok) return [];
