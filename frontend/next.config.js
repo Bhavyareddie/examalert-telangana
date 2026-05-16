@@ -6,6 +6,14 @@ const nextConfig = {
       { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://examalert-telangana.onrender.com/api/:path*',
+      },
+    ];
+  },
   async headers() {
     return [
       {
