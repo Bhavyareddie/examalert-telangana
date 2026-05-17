@@ -50,7 +50,7 @@ export default function ExamsPage() {
       query = query.order('application_end', { ascending: true, nullsFirst: false }).range(from, from + limit - 1);
 
       const { data, count } = await query;
-      setExams(p === 1 ? (data || []) : prev => [...prev, ...(data || [])]);
+      setExams(p === 1 ? (data as Exam[] || []) : prev => [...prev, ...(data as Exam[] || [])]);
       setTotal(count || 0);
     } catch {}
     setLoading(false);
