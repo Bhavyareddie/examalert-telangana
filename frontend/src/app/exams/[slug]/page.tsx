@@ -134,7 +134,7 @@ export default async function ExamDetailPage({ params }: { params: { slug: strin
               <div>
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Required Qualifications</p>
                 <div className="flex flex-wrap gap-2">
-                  {exam.qualifications.map(q => (
+                  {(exam.qualifications || []).map(q => (
                     <span key={q} className="px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium">
                       {q}
                     </span>
@@ -172,9 +172,9 @@ export default async function ExamDetailPage({ params }: { params: { slug: strin
           </div>
 
           {/* Tags */}
-          {exam.tags.length > 0 && (
+          {(exam.tags || []).length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {exam.tags.map(tag => (
+              {(exam.tags || []).map(tag => (
                 <span key={tag} className="text-xs px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full">
                   {tag}
                 </span>

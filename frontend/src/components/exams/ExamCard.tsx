@@ -169,14 +169,14 @@ export default function ExamCard({ exam, isBookmarked = false, onBookmarkChange 
       {/* Qualifications */}
       <div className="px-5 pb-4">
         <div className="flex flex-wrap gap-1.5">
-          {exam.qualifications.slice(0, 4).map(q => (
+          {(exam.qualifications || []).slice(0, 4).map(q => (
             <span key={q} className="text-xs px-2 py-0.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-full">
               {t.qualifications?.[q] || q}
             </span>
           ))}
-          {exam.qualifications.length > 4 && (
+          {(exam.qualifications || []).length > 4 && (
             <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-500 rounded-full">
-              +{exam.qualifications.length - 4}
+              +{(exam.qualifications || []).length - 4}
             </span>
           )}
         </div>
