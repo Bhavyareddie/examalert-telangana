@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+export const dynamic = 'force-dynamic';
 import type { Metadata } from 'next';
 import { Calendar, Users, IndianRupee, Clock, ExternalLink, FileText, BookOpen, Download } from 'lucide-react';
 import { format } from 'date-fns';
