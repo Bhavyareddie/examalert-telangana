@@ -16,13 +16,13 @@ const supabase = createClient(
 
 async function getExam(slug: string): Promise<Exam | null> {
   try {
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from('exams')
-      .select('*')
-      .eq('slug', slug)
-      .single();
+      .select('*', { count: 'exact' })
+      .eq('slug', slug);
+    console.log('Query result:', { slug, count, error, hasData: !!data?.length });
     if (error) console.error('Supabase error:', error);
-    return data;
+    return data?.[0] || null;
   } catch (e) { console.error('getExam error:', e); return null; }
 }
 
