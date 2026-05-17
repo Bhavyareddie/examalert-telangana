@@ -15,7 +15,7 @@ async function getTrendingExams(): Promise<Exam[]> {
       .eq('is_active', true)
       .order('view_count', { ascending: false })
       .limit(6);
-    return data || [];
+    return (data as Exam[]) || [];
   } catch {
     return [];
   }
