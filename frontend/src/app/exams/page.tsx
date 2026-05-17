@@ -2,7 +2,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
-import api from '@/lib/api';
 import ExamCard from '@/components/exams/ExamCard';
 import ExamFiltersPanel from '@/components/exams/ExamFilters';
 import type { Exam, ExamFilters } from '@/types';
@@ -29,19 +28,27 @@ export default function ExamsPage() {
   const fetchExams = useCallback(async (f: ExamFilters, p: number) => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (f.search) params.set('search', f.search);
-      if (f.category) params.set('category', f.category);
-      if (f.qualification) params.set('qualification', f.qualification);
-      if (f.tag) params.set('tag', f.tag);
-      if (f.trending) params.set('trending', 'true');
-      if (f.sort) params.set('sort', f.sort);
-      params.set('page', String(p));
-      params.set('limit', '12');
+      const { createClient } = await import('@/lib/supabase');
+      const supabase = createClient();
+      const limit = 12;
+      const from = (p - 1) * limit;
 
-      const { data } = await api.get(`/exams?${params}`);
-      setExams(p === 1 ? data.data : prev => [...prev, ...data.data]);
-      setTotal(data.total);
+      let query = supabase
+        .from('exams')
+        .select('id,slug,name,conducting_body,min_age,max_age,qualifications,fee_general,fee_sc_st,application_end,exam_date,total_vacancies,tags,category,is_trending,view_count,apply_link,exam_status', { count: 'exact' })
+        .eq('is_active', true);
+
+      if (f.search) query = query.ilike('name', `%${f.search}%`);
+      if (f.category) query = query.eq('category', f.category);
+      if (f.trending) query = query.eq('is_trending', true);
+      if (f.qualification) query = query.contains('qualifications', [f.qualification]);
+      if (f.tag) query = query.contains('tags', [f.tag]);
+
+      query = query.order('application_end', { ascending: true, nullsFirst: false }).range(from, from + limit - 1);
+
+      const { data, count } = await query;
+      setExams(p === 1 ? (data || []) : prev => [...prev, ...(data || [])]);
+      setTotal(count || 0);
     } catch {}
     setLoading(false);
   }, []);

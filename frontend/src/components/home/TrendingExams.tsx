@@ -1,13 +1,18 @@
 import ExamCard from '@/components/exams/ExamCard';
 import type { Exam } from '@/types';
+import { createClient } from '@/lib/supabase-server';
 
 async function getTrendingExams(): Promise<Exam[]> {
   try {
-    const res = await fetch(`https://examalert-telangana.onrender.com/api/exams/trending`, {
-      next: { revalidate: 300 },
-    });
-    if (!res.ok) return [];
-    return res.json();
+    const supabase = createClient();
+    const { data } = await supabase
+      .from('exams')
+      .select('id,slug,name,category,tags,application_end,total_vacancies,view_count,conducting_body,fee_general,exam_status,is_trending')
+      .eq('is_trending', true)
+      .eq('is_active', true)
+      .order('view_count', { ascending: false })
+      .limit(6);
+    return data || [];
   } catch {
     return [];
   }
