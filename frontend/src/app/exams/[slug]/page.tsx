@@ -16,14 +16,14 @@ const supabase = createClient(
 
 async function getExam(slug: string): Promise<Exam | null> {
   try {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('exams')
       .select('*')
       .eq('slug', slug)
-      .eq('is_active', true)
       .single();
+    if (error) console.error('Supabase error:', error);
     return data;
-  } catch { return null; }
+  } catch (e) { console.error('getExam error:', e); return null; }
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
