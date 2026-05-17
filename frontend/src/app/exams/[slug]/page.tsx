@@ -6,11 +6,22 @@ import type { Exam } from '@/types';
 import ExamCountdown from '@/components/exams/ExamCountdown';
 import ExamBookmarkBtn from '@/components/exams/ExamBookmarkBtn';
 
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  'https://osyjzrjloqgmnrtgzfwf.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zeWp6cmpsb3FnbW5ydGd6ZndmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzM0NDksImV4cCI6MjA5NDQ0OTQ0OX0.gNbNu9LjddSgULPsFdoR2l0p0MO2DxUCELmkpwS1-U0'
+);
+
 async function getExam(slug: string): Promise<Exam | null> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/exams/${slug}`, { next: { revalidate: 60 } });
-    if (!res.ok) return null;
-    return res.json();
+    const { data } = await supabase
+      .from('exams')
+      .select('*')
+      .eq('slug', slug)
+      .eq('is_active', true)
+      .single();
+    return data;
   } catch { return null; }
 }
 
@@ -40,7 +51,7 @@ export default async function ExamDetailPage({ params }: { params: { slug: strin
     { label: 'OBC', fee: exam.fee_obc },
     { label: 'SC / ST', fee: exam.fee_sc_st },
     { label: 'EWS', fee: exam.fee_ews },
-  ];
+  ].filter(r => r.fee !== null && r.fee !== undefined);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
