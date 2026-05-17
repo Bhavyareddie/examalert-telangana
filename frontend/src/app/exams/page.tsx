@@ -1,14 +1,19 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
+import { createClient } from '@supabase/supabase-js';
 import ExamCard from '@/components/exams/ExamCard';
 import ExamFiltersPanel from '@/components/exams/ExamFilters';
 import type { Exam, ExamFilters } from '@/types';
 
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
 export default function ExamsPage() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const [exams, setExams] = useState<Exam[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -28,8 +33,6 @@ export default function ExamsPage() {
   const fetchExams = useCallback(async (f: ExamFilters, p: number) => {
     setLoading(true);
     try {
-      const { createClient } = await import('@/lib/supabase');
-      const supabase = createClient();
       const limit = 12;
       const from = (p - 1) * limit;
 
@@ -78,7 +81,6 @@ export default function ExamsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">All Exams</h1>
         <p className="text-gray-600 dark:text-gray-400">
@@ -87,7 +89,6 @@ export default function ExamsPage() {
         </p>
       </div>
 
-      {/* Search Bar */}
       <form onSubmit={handleSearch} className="flex gap-3 mb-6">
         <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 focus-within:ring-2 focus-within:ring-blue-500">
           <Search size={18} className="text-gray-400" />
@@ -113,7 +114,6 @@ export default function ExamsPage() {
         </button>
       </form>
 
-      {/* Active Filters */}
       {activeFilterCount > 0 && (
         <div className="flex flex-wrap gap-2 mb-6">
           {filters.category && <FilterChip label={`Category: ${filters.category}`} onRemove={() => setFilters(f => ({ ...f, category: undefined }))} />}
@@ -125,14 +125,12 @@ export default function ExamsPage() {
       )}
 
       <div className="flex gap-8">
-        {/* Filters Sidebar - Desktop */}
         <aside className="hidden md:block w-64 flex-shrink-0">
           <div className="sticky top-24">
             <ExamFiltersPanel filters={filters} onChange={handleFilterChange} />
           </div>
         </aside>
 
-        {/* Mobile Filters */}
         {showFilters && (
           <div className="fixed inset-0 z-50 md:hidden">
             <div className="absolute inset-0 bg-black/50" onClick={() => setShowFilters(false)} />
@@ -146,7 +144,6 @@ export default function ExamsPage() {
           </div>
         )}
 
-        {/* Exam Grid */}
         <div className="flex-1 min-w-0">
           {loading && page === 1 ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">

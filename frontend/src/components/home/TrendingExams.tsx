@@ -1,10 +1,13 @@
+import { createClient } from '@supabase/supabase-js';
 import ExamCard from '@/components/exams/ExamCard';
 import type { Exam } from '@/types';
-import { createClient } from '@/lib/supabase-server';
 
 async function getTrendingExams(): Promise<Exam[]> {
   try {
-    const supabase = createClient();
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
     const { data } = await supabase
       .from('exams')
       .select('id,slug,name,category,tags,application_end,total_vacancies,view_count,conducting_body,fee_general,exam_status,is_trending')
