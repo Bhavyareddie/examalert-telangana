@@ -178,7 +178,12 @@ app.use((err, req, res, next) => {
   res.status(status).json({ error: message });
 });
 
+const { startExamUpdateCron } = require('./services/examUpdater');
+
 // ── Start ─────────────────────────────────────────────────────
-app.listen(PORT, () => logger.info(`ExamAlert API running on port ${PORT} [${process.env.NODE_ENV}]`));
+app.listen(PORT, () => {
+  logger.info(`ExamAlert API running on port ${PORT} [${process.env.NODE_ENV}]`);
+  startExamUpdateCron();
+});
 
 module.exports = app;
