@@ -104,14 +104,14 @@ export default function HomePage() {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Popular Exam Categories</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { title: 'Exams after 10th', href: '/exams?qualification=10th', count: '15+ exams' },
-              { title: 'Exams after Degree', href: '/exams?qualification=degree', count: '40+ exams' },
-              { title: 'TSPSC Notifications', href: '/exams?category=psc', count: '10+ exams' },
-              { title: 'Latest Govt Jobs', href: '/exams?category=govt_jobs', count: '50+ exams' },
-              { title: 'Banking Exams', href: '/exams?category=banking', count: '20+ exams' },
-              { title: 'Railway Jobs', href: '/exams?category=railways', count: '15+ exams' },
-              { title: 'Teaching Jobs', href: '/exams?category=teaching', count: '12+ exams' },
-              { title: 'Police Recruitment', href: '/exams?category=police', count: '8+ exams' },
+              { title: 'Exams after 10th', href: '/exams?qualification=10th', count: '18 exams' },
+              { title: 'Exams after Degree', href: '/exams?qualification=degree', count: '93 exams' },
+              { title: 'TSPSC Notifications', href: '/exams?category=psc', count: '10 exams' },
+              { title: 'Latest Govt Jobs', href: '/exams?category=govt_jobs', count: '32 exams' },
+              { title: 'Banking Exams', href: '/exams?category=banking', count: '16 exams' },
+              { title: 'Railway Jobs', href: '/exams?category=railways', count: '7 exams' },
+              { title: 'Teaching Jobs', href: '/exams?category=teaching', count: '9 exams' },
+              { title: 'Police Recruitment', href: '/exams?category=police', count: '4 exams' },
             ].map((item, i) => (
               <Link key={i} href={item.href}
                 className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all">
