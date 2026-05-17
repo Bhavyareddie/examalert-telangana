@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   return {
     title: `${exam.name} 2024 - Eligibility, Dates, Apply Online`,
     description: `${exam.name} by ${exam.conducting_body}. Vacancies: ${exam.total_vacancies || 'TBA'}. Last date: ${exam.application_end || 'TBA'}. Check eligibility, fees, syllabus.`,
-    keywords: [exam.name, exam.conducting_body, 'Telangana', ...exam.tags],
+    keywords: [exam.name, exam.conducting_body, 'Telangana', ...(exam.tags || [])],
   };
 }
 
