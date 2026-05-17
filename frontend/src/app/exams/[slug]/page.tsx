@@ -204,22 +204,16 @@ export default function ExamDetailPage() {
           </div>
 
           <div className="space-y-3">
-            {exam.apply_link && (
-              <a href={exam.apply_link} target="_blank" rel="noopener noreferrer"
+            {(exam.apply_link || exam.official_website) && (
+              <a href={exam.apply_link || exam.official_website} target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-colors">
-                <ExternalLink size={18} /> Apply Online
+                <ExternalLink size={18} /> Apply Now
               </a>
             )}
             {exam.notification_pdf && (
               <a href={exam.notification_pdf} target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-3 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-medium hover:border-blue-400 transition-colors">
                 <FileText size={18} /> Download Notification
-              </a>
-            )}
-            {exam.official_website && (
-              <a href={exam.official_website} target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-3 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-medium hover:border-blue-400 transition-colors">
-                <ExternalLink size={16} /> Official Website
               </a>
             )}
           </div>
