@@ -110,9 +110,9 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-12">
+      <footer className="bg-gray-900 text-gray-400 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
@@ -125,7 +125,7 @@ export default function HomePage() {
             <div>
               <h4 className="text-white font-semibold mb-3">Quick Links</h4>
               <ul className="space-y-2 text-sm">
-                {[['All Exams', '/exams'], ['Eligibility Checker', '/eligibility'], ['Mock Tests', '/exams'], ['Daily Quiz', '/quiz']].map(([label, href]) => (
+                {[['All Exams', '/exams'], ['Eligibility Checker', '/eligibility'], ['Bookmarks', '/bookmarks']].map(([label, href]) => (
                   <li key={href}><Link href={href} className="hover:text-white transition-colors">{label}</Link></li>
                 ))}
               </ul>
@@ -138,18 +138,9 @@ export default function HomePage() {
                 ))}
               </ul>
             </div>
-            <div>
-              <h4 className="text-white font-semibold mb-3">Connect</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Telegram Channel</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">WhatsApp Group</a></li>
-                <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-              </ul>
-            </div>
           </div>
           <div className="border-t border-gray-800 pt-6 text-center text-sm">
-            <p>© 2024 ExamAlert Telangana. All rights reserved. | Made with ❤️ for Telangana students</p>
+            <p>© 2025 ExamAlert Telangana. All rights reserved. | Made with ❤️ for Telangana students</p>
           </div>
         </div>
       </footer>
