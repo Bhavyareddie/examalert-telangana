@@ -30,7 +30,7 @@ function applyStatusFilter(query: any, status?: string) {
   if (status === 'closed') {
     return query
       .is('result_date', null)
-      .or(`application_end.lt.${today},exam_date.lt.${today}`);
+      .or(`application_end.lt.${today},exam_date.lt.${today},and(application_start.lt.${today},application_end.is.null,exam_date.is.null)`);
   }
   if (status === 'result') {
     return query.not('result_date', 'is', null).lte('result_date', today);
