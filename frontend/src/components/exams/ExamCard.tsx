@@ -35,6 +35,7 @@ function getExamStatus(exam: Exam) {
   if (appStart && isFuture(appStart)) return 'upcoming';
   if (appStart && isPast(appStart) && appEnd && isFuture(appEnd)) return 'live';
   if (!appStart && appEnd && isFuture(appEnd)) return 'live';
+  if (appStart && isPast(appStart) && !appEnd) return 'live';
   return 'expected';
 }
 
