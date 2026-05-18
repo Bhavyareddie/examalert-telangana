@@ -10,7 +10,7 @@ async function getTrendingExams(): Promise<Exam[]> {
     );
     const { data } = await supabase
       .from('exams')
-      .select('id,slug,name,category,tags,application_end,total_vacancies,view_count,conducting_body,fee_general,exam_status,is_trending')
+      .select('id,slug,name,category,tags,application_start,application_end,exam_date,result_date,notification_date,total_vacancies,view_count,conducting_body,fee_general,fee_sc_st,min_age,max_age,qualifications,apply_link,exam_status,is_trending')
       .eq('is_trending', true)
       .eq('is_active', true)
       .order('view_count', { ascending: false })
