@@ -50,3 +50,5 @@ desktop.ini
 # ── Uploads (local dev) ───────────────────
 uploads/
 tmp/
+
+.vercel

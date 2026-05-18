@@ -28,4 +28,5 @@ jobs:
       - name: Deploy to Vercel
         run: |
           cd frontend
+          vercel link --yes --token=${{ secrets.VERCEL_TOKEN }} --project=examalert-telangana-sryk
           vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes --force
