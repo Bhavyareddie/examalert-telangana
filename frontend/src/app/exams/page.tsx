@@ -25,9 +25,6 @@ function applyStatusFilter(query: any, status?: string) {
   if (status === 'upcoming') {
     return query.gt('application_start', today);
   }
-  if (status === 'expected') {
-    return query.is('application_start', null).is('application_end', null);
-  }
   if (status === 'closed') {
     return query.lt('application_end', today).is('result_date', null).or(`exam_date.is.null,exam_date.gt.${today}`);
   }
@@ -114,7 +111,6 @@ export default function ExamsPage() {
   const statusLabels: Record<string, string> = {
     live: '🟢 Live',
     upcoming: '🔔 Opening Soon',
-    expected: '📋 Expected',
     closed: '🔴 Closed',
     result: '🏆 Result Out',
   };
@@ -137,7 +133,6 @@ export default function ExamsPage() {
           { value: '', label: '📋 All' },
           { value: 'live', label: '🟢 Apply Now' },
           { value: 'upcoming', label: '🔔 Opening Soon' },
-          { value: 'expected', label: '📢 Expected' },
           { value: 'closed', label: '🔴 Closed' },
           { value: 'result', label: '🏆 Result Out' },
         ].map(opt => (

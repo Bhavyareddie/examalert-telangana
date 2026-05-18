@@ -126,5 +126,5 @@ export interface ExamFilters {
   max_age?: number;
   sort?: string;
   trending?: boolean;
-  status?: 'live' | 'upcoming' | 'expected' | 'closed' | 'result' | '';
+  status?: 'live' | 'upcoming' | 'closed' | 'result' | '';
 }
