@@ -193,13 +193,32 @@ export default function ExamCard({ exam, isBookmarked = false, onBookmarkChange 
         {status === 'expected' && (
           <div className="flex items-center gap-2 col-span-2 bg-blue-50 dark:bg-blue-900/10 rounded-xl p-2.5">
             <Bell size={14} className="text-blue-600 flex-shrink-0" />
-            <div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Notification expected</p>
-              <p className="text-sm font-bold text-blue-700 dark:text-blue-400">
-                {exam.notification_date
-                  ? format(new Date(exam.notification_date), 'dd MMM yyyy')
-                  : 'Coming soon — Set alert to get notified'}
-              </p>
+            <div className="flex gap-4">
+              {appStart ? (
+                <div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Registration Start</p>
+                  <p className="text-sm font-bold text-blue-700 dark:text-blue-400">
+                    {format(appStart, 'dd MMM yyyy')}
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Notification expected</p>
+                  <p className="text-sm font-bold text-blue-700 dark:text-blue-400">
+                    {exam.notification_date
+                      ? format(new Date(exam.notification_date), 'dd MMM yyyy')
+                      : 'Coming soon — Set alert to get notified'}
+                  </p>
+                </div>
+              )}
+              {appEnd && (
+                <div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Last Date</p>
+                  <p className="text-sm font-bold text-blue-700 dark:text-blue-400">
+                    {format(appEnd, 'dd MMM yyyy')}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         )}
