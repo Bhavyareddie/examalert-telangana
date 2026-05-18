@@ -31,11 +31,10 @@ function getExamStatus(exam: Exam) {
   if (resultDate && isPast(resultDate)) return 'result_out';
   if (examDate && isPast(examDate) && (!resultDate || isFuture(resultDate))) return 'exam_over';
   if (appEnd && isPast(appEnd)) return 'closed';
-  if (appStart && isPast(appStart) && !appEnd && !examDate) return 'closed';
+  if (appStart && isPast(appStart) && !appEnd) return 'closed';
   if (appStart && isFuture(appStart)) return 'upcoming';
   if (appStart && isPast(appStart) && appEnd && isFuture(appEnd)) return 'live';
   if (!appStart && appEnd && isFuture(appEnd)) return 'live';
-  if (appStart && isPast(appStart) && !appEnd) return 'live';
   return 'expected';
 }
 
