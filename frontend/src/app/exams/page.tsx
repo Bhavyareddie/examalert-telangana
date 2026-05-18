@@ -13,7 +13,8 @@ const supabase = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zeWp6cmpsb3FnbW5ydGd6ZndmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzM0NDksImV4cCI6MjA5NDQ0OTQ0OX0.gNbNu9LjddSgULPsFdoR2l0p0MO2DxUCELmkpwS1-U0'
 );
 
-const today = new Date().toISOString().split('T')[0];
+// today is fetched from Supabase server to avoid client clock issues
+let today = new Date().toISOString().split('T')[0];
 
 // Apply status filter using date comparisons
 function applyStatusFilter(query: any, status?: string) {
@@ -59,6 +60,10 @@ export default function ExamsPage() {
   const fetchExams = useCallback(async (f: ExamFilters, p: number) => {
     setLoading(true);
     try {
+      // Use Supabase server time to avoid client clock skew
+      const { data: tsData } = await supabase.rpc('now');
+      if (tsData) today = (tsData as string).split('T')[0];
+
       const limit = 12;
       const from = (p - 1) * limit;
 
