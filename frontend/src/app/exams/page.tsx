@@ -1,4 +1,4 @@
-// v2
+// v3
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -62,7 +62,7 @@ export default function ExamsPage() {
 
       let query = supabase
         .from('exams')
-        .select('id,slug,name,conducting_body,min_age,max_age,qualifications,fee_general,fee_sc_st,application_start,application_end,exam_date,result_date,notification_date,total_vacancies,tags,category,is_trending,view_count,apply_link', { count: 'exact' })
+        .select('id,slug,name,conducting_body,min_age,max_age,qualifications,fee_general,fee_sc_st,application_start,application_end,exam_date,result_date,notification_date,total_vacancies,tags,category,is_trending,view_count,apply_link', { count: 'exact', head: false })
         .eq('is_active', true);
 
       if (f.search) query = query.ilike('name', `%${f.search}%`);
