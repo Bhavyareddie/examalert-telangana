@@ -18,9 +18,9 @@ const today = new Date().toISOString().split('T')[0];
 function applyStatusFilter(query: any, status?: string) {
   if (!status) return query;
   if (status === 'live') {
-    return query
-      .lte('application_start', today)
-      .gte('application_end', today);
+    return query.or(
+      `and(application_start.lte.${today},application_end.gte.${today}),and(application_start.lte.${today},application_end.is.null)`
+    );
   }
   if (status === 'upcoming') {
     return query.gt('application_start', today);
