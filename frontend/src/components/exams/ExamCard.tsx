@@ -157,7 +157,7 @@ export default function ExamCard({ exam, isBookmarked = false, onBookmarkChange 
                   </p>
                 </div>
               )}
-              {appEnd && (
+              {appEnd ? (
                 <div>
                   <p className="text-xs text-gray-500 dark:text-gray-400">Last date</p>
                   <p className="text-sm font-bold text-green-700 dark:text-green-400">
@@ -167,6 +167,13 @@ export default function ExamCard({ exam, isBookmarked = false, onBookmarkChange 
                         ({daysToApply}d left)
                       </span>
                     )}
+                  </p>
+                </div>
+              ) : examDate && (
+                <div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Exam date</p>
+                  <p className="text-sm font-bold text-green-700 dark:text-green-400">
+                    {format(examDate, 'dd MMM yyyy')}
                   </p>
                 </div>
               )}
