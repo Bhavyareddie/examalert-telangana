@@ -13,19 +13,8 @@ const supabase = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zeWp6cmpsb3FnbW5ydGd6ZndmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzM0NDksImV4cCI6MjA5NDQ0OTQ0OX0.gNbNu9LjddSgULPsFdoR2l0p0MO2DxUCELmkpwS1-U0'
 );
 
-let today = new Date().toISOString().split('T')[0];
+const today = new Date().toISOString().split('T')[0];
 
-async function getServerDate(): Promise<string> {
-  try {
-    const res = await fetch(
-      'https://osyjzrjloqgmnrtgzfwf.supabase.co/rest/v1/exams?select=id&limit=1',
-      { headers: { apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zeWp6cmpsb3FnbW5ydGd6ZndmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzM0NDksImV4cCI6MjA5NDQ0OTQ0OX0.gNbNu9LjddSgULPsFdoR2l0p0MO2DxUCELmkpwS1-U0' } }
-    );
-    const date = res.headers.get('date');
-    if (date) return new Date(date).toISOString().split('T')[0];
-  } catch {}
-  return new Date().toISOString().split('T')[0];
-}
 
 // Apply status filter using date comparisons
 function applyStatusFilter(query: any, status?: string) {
@@ -71,8 +60,6 @@ export default function ExamsPage() {
   const fetchExams = useCallback(async (f: ExamFilters, p: number) => {
     setLoading(true);
     try {
-      today = await getServerDate();
-
       const limit = 12;
       const from = (p - 1) * limit;
 
