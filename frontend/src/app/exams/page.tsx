@@ -73,10 +73,13 @@ export default function ExamsPage() {
       // Apply status filter
       query = applyStatusFilter(query, f.status);
 
-      const sortCol = f.sort || 'created_at';
-      const allowedSorts = ['application_start', 'application_end', 'exam_date', 'total_vacancies', 'view_count', 'created_at'];
-      const safeSort = allowedSorts.includes(sortCol) ? sortCol : 'created_at';
-      query = query.order(safeSort, { ascending: false, nullsFirst: false }).range(from, from + limit - 1);
+      if (f.sort && f.sort !== 'id') {
+        const allowedSorts = ['application_start', 'application_end', 'exam_date', 'total_vacancies', 'view_count'];
+        if (allowedSorts.includes(f.sort)) {
+          query = query.order(f.sort, { ascending: true, nullsFirst: false });
+        }
+      }
+      query = query.order('id', { ascending: false }).range(from, from + limit - 1);
 
       const { data, count } = await query;
       setExams(p === 1 ? (data as Exam[] || []) : prev => [...prev, ...(data as Exam[] || [])]);

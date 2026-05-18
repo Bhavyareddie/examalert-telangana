@@ -95,13 +95,13 @@ export default function ExamFiltersPanel({ filters, onChange }: Props) {
       {/* ── Sort ── */}
       <div>
         <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 block">Sort By</label>
-        <select value={filters.sort || 'application_end'} onChange={e => update('sort', e.target.value)}
+        <select value={filters.sort || 'id'} onChange={e => update('sort', e.target.value)}
           className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-          <option value="application_end">Last Date (Earliest First)</option>
+          <option value="id">Default</option>
+          <option value="application_end">Last Date</option>
           <option value="exam_date">Exam Date</option>
           <option value="total_vacancies">Most Vacancies</option>
           <option value="view_count">Most Popular</option>
-          <option value="created_at">Newly Added</option>
         </select>
       </div>
 
