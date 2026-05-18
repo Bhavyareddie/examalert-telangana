@@ -2,11 +2,14 @@ import { createClient } from '@supabase/supabase-js';
 import ExamCard from '@/components/exams/ExamCard';
 import type { Exam } from '@/types';
 
+export const revalidate = 0;
+
 async function getTrendingExams(): Promise<Exam[]> {
   try {
     const supabase = createClient(
       'https://osyjzrjloqgmnrtgzfwf.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zeWp6cmpsb3FnbW5ydGd6ZndmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzM0NDksImV4cCI6MjA5NDQ0OTQ0OX0.gNbNu9LjddSgULPsFdoR2l0p0MO2DxUCELmkpwS1-U0'
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zeWp6cmpsb3FnbW5ydGd6ZndmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzM0NDksImV4cCI6MjA5NDQ0OTQ0OX0.gNbNu9LjddSgULPsFdoR2l0p0MO2DxUCELmkpwS1-U0',
+      { global: { fetch: (url, opts) => fetch(url, { ...opts, cache: 'no-store' }) } }
     );
     const { data } = await supabase
       .from('exams')
