@@ -83,7 +83,6 @@ export default function HomePage() {
             {[
               { icon: <CheckCircle className="text-green-500" size={28} />, title: 'Smart Eligibility Checker', desc: 'Enter your age, qualification & category to instantly see all exams you can apply for.', href: '/eligibility' },
               { icon: <Bell className="text-blue-500" size={28} />, title: 'Real-time Alerts', desc: 'Get notified about new exams, date changes, results and counseling schedules.', href: '/notifications' },
-              { icon: <BookOpen className="text-purple-500" size={28} />, title: 'Mock Tests & Papers', desc: 'Practice with free mock tests and previous year question papers for all exams.', href: '/exams' },
               { icon: <Award className="text-orange-500" size={28} />, title: 'AI Career Roadmap', desc: 'Get personalized career guidance and exam recommendations powered by AI.', href: '/profile' },
             ].map((f, i) => (
               <Link key={i} href={f.href} className="p-6 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md transition-all group">
