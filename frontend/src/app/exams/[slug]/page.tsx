@@ -111,11 +111,11 @@ export default function ExamDetailPage() {
                 <p className="text-lg font-bold text-gray-900 dark:text-white">{fee === 0 ? 'Free' : `₹${fee}`}</p>
                 <p className="text-xs text-gray-500">Fee</p>
               </div>
-              {exam.application_end && (
+              {exam.application_start && (
                 <div className="text-center p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
                   <Calendar size={20} className="text-red-600 mx-auto mb-1" />
-                  <p className="text-sm font-bold text-gray-900 dark:text-white">{format(new Date(exam.application_end), 'dd MMM')}</p>
-                  <p className="text-xs text-gray-500">Last Date</p>
+                  <p className="text-sm font-bold text-gray-900 dark:text-white">{format(new Date(exam.application_start), 'dd MMM')}</p>
+                  <p className="text-xs text-gray-500">Reg. Start</p>
                 </div>
               )}
             </div>
