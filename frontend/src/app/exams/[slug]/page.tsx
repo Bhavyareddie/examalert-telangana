@@ -189,7 +189,16 @@ export default function ExamDetailPage() {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {exam.application_end && <ExamCountdown deadline={exam.application_end} label="Application Closes In" />}
+          {(() => {
+            const now = new Date();
+            const appStart = exam.application_start ? new Date(exam.application_start) : null;
+            const appEnd = exam.application_end ? new Date(exam.application_end) : null;
+            if (appStart && appStart > now)
+              return <ExamCountdown deadline={exam.application_start!} label="Application Opens In" />;
+            if (appEnd && appEnd > now)
+              return <ExamCountdown deadline={exam.application_end!} label="Application Closes In" />;
+            return null;
+          })()}
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
             <h3 className="font-bold text-gray-900 dark:text-white mb-4">Important Dates</h3>
