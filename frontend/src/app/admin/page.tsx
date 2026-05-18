@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Edit, Trash2, Users, BookOpen, Bookmark, Bell, Loader2, Upload, Send } from 'lucide-react';
+import { Plus, Edit, Trash2, Users, BookOpen, Bookmark, Bell, Loader2, Upload, Send, RefreshCw } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAppStore } from '@/store';
 import api from '@/lib/api';
@@ -20,6 +20,19 @@ export default function AdminPage() {
   const [showExamForm, setShowExamForm] = useState(false);
   const [editingExam, setEditingExam] = useState<Exam | null>(null);
   const [notifyForm, setNotifyForm] = useState({ title: '', message: '', type: 'general' });
+  const [updating, setUpdating] = useState(false);
+
+  const autoUpdateDates = async () => {
+    setUpdating(true);
+    try {
+      await api.post('/admin/update-exam-dates');
+      toast.success('AI date update started! Check back in a few minutes.');
+    } catch {
+      toast.error('Failed to trigger update');
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   useEffect(() => {
     if (!authLoading && (!user || !profile?.is_admin)) router.push('/');
@@ -96,20 +109,25 @@ export default function AdminPage() {
 
       {/* Stats */}
       {activeTab === 'stats' && stats && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { label: 'Total Exams', value: stats.total_exams, icon: <BookOpen className="text-blue-600" size={24} />, color: 'bg-blue-50 dark:bg-blue-900/20' },
-            { label: 'Total Users', value: stats.total_users, icon: <Users className="text-green-600" size={24} />, color: 'bg-green-50 dark:bg-green-900/20' },
-            { label: 'Total Bookmarks', value: stats.total_bookmarks, icon: <Bookmark className="text-purple-600" size={24} />, color: 'bg-purple-50 dark:bg-purple-900/20' },
-          ].map((s, i) => (
-            <div key={i} className={`${s.color} rounded-2xl p-6 border border-gray-200 dark:border-gray-700`}>
-              <div className="flex items-center justify-between mb-3">
-                {s.icon}
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            {[
+              { label: 'Total Exams', value: stats.total_exams, icon: <BookOpen className="text-blue-600" size={24} />, color: 'bg-blue-50 dark:bg-blue-900/20' },
+              { label: 'Total Users', value: stats.total_users, icon: <Users className="text-green-600" size={24} />, color: 'bg-green-50 dark:bg-green-900/20' },
+              { label: 'Total Bookmarks', value: stats.total_bookmarks, icon: <Bookmark className="text-purple-600" size={24} />, color: 'bg-purple-50 dark:bg-purple-900/20' },
+            ].map((s, i) => (
+              <div key={i} className={`${s.color} rounded-2xl p-6 border border-gray-200 dark:border-gray-700`}>
+                <div className="flex items-center justify-between mb-3">{s.icon}</div>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">{s.value?.toLocaleString() || 0}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">{s.label}</p>
               </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white">{s.value?.toLocaleString() || 0}</p>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">{s.label}</p>
-            </div>
-          ))}
+            ))}
+          </div>
+          <button onClick={autoUpdateDates} disabled={updating}
+            className="flex items-center gap-2 px-5 py-3 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white rounded-xl font-semibold transition-colors">
+            {updating ? <Loader2 size={18} className="animate-spin" /> : <RefreshCw size={18} />}
+            {updating ? 'Updating...' : 'Auto Update Exam Dates with AI'}
+          </button>
         </div>
       )}
 

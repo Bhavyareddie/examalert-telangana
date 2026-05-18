@@ -7,6 +7,7 @@ const supabase = require('../utils/supabase');
 const { adminAuth, auditLog } = require('../middleware/auth');
 const { validate, schemas } = require('../utils/validators');
 const { securityLog } = require('../utils/logger');
+const { updateExamDates } = require('../services/examUpdater');
 
 // Multer: memory storage, strict limits
 const upload = multer({
@@ -208,6 +209,12 @@ router.put('/users/:id/toggle-admin', uuidParam, async (req, res) => {
 
   auditLog(req.user.id, 'TOGGLE_ADMIN', req.params.id, { email: user.email, newStatus: data.is_admin });
   res.json({ is_admin: data.is_admin });
+});
+
+// POST /api/admin/update-exam-dates
+router.post('/update-exam-dates', async (req, res) => {
+  res.json({ message: 'Exam date update started in background' });
+  updateExamDates().catch(() => {});
 });
 
 // Multer error handler
