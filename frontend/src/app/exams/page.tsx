@@ -8,9 +8,34 @@ import ExamFiltersPanel from '@/components/exams/ExamFilters';
 import type { Exam, ExamFilters } from '@/types';
 
 const supabase = createClient(
-  'https://osyjzrjloqgmnrtgzfwf.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zeWp6cmpsb3FnbW5ydGd6ZndmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NzM0NDksImV4cCI6MjA5NDQ0OTQ0OX0.gNbNu9LjddSgULPsFdoR2l0p0MO2DxUCELmkpwS1-U0'
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
+
+const today = new Date().toISOString().split('T')[0];
+
+// Apply status filter using date comparisons
+function applyStatusFilter(query: any, status?: string) {
+  if (!status) return query;
+  if (status === 'live') {
+    return query
+      .lte('application_start', today)
+      .gte('application_end', today);
+  }
+  if (status === 'upcoming') {
+    return query.gt('application_start', today);
+  }
+  if (status === 'expected') {
+    return query.is('application_start', null).is('application_end', null);
+  }
+  if (status === 'closed') {
+    return query.lt('application_end', today).gt('exam_date', today);
+  }
+  if (status === 'result') {
+    return query.not('result_date', 'is', null).lte('result_date', today);
+  }
+  return query;
+}
 
 export default function ExamsPage() {
   const searchParams = useSearchParams();
@@ -26,6 +51,7 @@ export default function ExamsPage() {
     qualification: (searchParams.get('qualification') as any) || undefined,
     tag: searchParams.get('tag') || undefined,
     trending: searchParams.get('trending') === 'true' || undefined,
+    status: (searchParams.get('status') as any) || undefined,
   });
 
   const [searchInput, setSearchInput] = useState(filters.search || '');
@@ -38,7 +64,7 @@ export default function ExamsPage() {
 
       let query = supabase
         .from('exams')
-        .select('id,slug,name,conducting_body,min_age,max_age,qualifications,fee_general,fee_sc_st,application_end,exam_date,total_vacancies,tags,category,is_trending,view_count,apply_link,exam_status', { count: 'exact' })
+        .select('id,slug,name,conducting_body,min_age,max_age,qualifications,fee_general,fee_sc_st,application_start,application_end,exam_date,result_date,notification_date,total_vacancies,tags,category,is_trending,view_count,apply_link', { count: 'exact' })
         .eq('is_active', true);
 
       if (f.search) query = query.ilike('name', `%${f.search}%`);
@@ -47,7 +73,13 @@ export default function ExamsPage() {
       if (f.qualification) query = query.contains('qualifications', [f.qualification]);
       if (f.tag) query = query.contains('tags', [f.tag]);
 
-      query = query.order('application_end', { ascending: true, nullsFirst: false }).range(from, from + limit - 1);
+      // Apply status filter
+      query = applyStatusFilter(query, f.status);
+
+      const sortCol = f.sort || 'application_start';
+      const allowedSorts = ['application_start', 'application_end', 'exam_date', 'total_vacancies', 'view_count', 'created_at'];
+      const safeSort = allowedSorts.includes(sortCol) ? sortCol : 'application_start';
+      query = query.order(safeSort, { ascending: true, nullsFirst: false }).range(from, from + limit - 1);
 
       const { data, count } = await query;
       setExams(p === 1 ? (data as Exam[] || []) : prev => [...prev, ...(data as Exam[] || [])]);
@@ -77,25 +109,58 @@ export default function ExamsPage() {
     fetchExams(filters, nextPage);
   };
 
-  const activeFilterCount = Object.values(filters).filter(Boolean).length;
+  const activeFilterCount = Object.values(filters).filter(v => v !== undefined && v !== '').length;
+
+  const statusLabels: Record<string, string> = {
+    live: '🟢 Live',
+    upcoming: '🔔 Opening Soon',
+    expected: '📋 Expected',
+    closed: '🔴 Closed',
+    result: '🏆 Result Out',
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">All Exams</h1>
-        <p className="text-gray-600 dark:text-gray-400">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">All Exams</h1>
+        <p className="text-gray-600 dark:text-gray-400 text-sm">
           {loading ? 'Loading...' : `${total} exams found`}
           {filters.search && ` for "${filters.search}"`}
+          {(filters as any).status && ` · ${statusLabels[(filters as any).status] || ''}`}
         </p>
       </div>
 
+      {/* Quick Status Tabs */}
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-1 scrollbar-hide">
+        {[
+          { value: '', label: '📋 All' },
+          { value: 'live', label: '🟢 Apply Now' },
+          { value: 'upcoming', label: '🔔 Opening Soon' },
+          { value: 'expected', label: '📢 Expected' },
+          { value: 'closed', label: '🔴 Closed' },
+          { value: 'result', label: '🏆 Result Out' },
+        ].map(opt => (
+          <button key={opt.value}
+            onClick={() => handleFilterChange({ ...filters, status: opt.value as any })}
+            className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+              (filters as any).status === opt.value || (!(filters as any).status && opt.value === '')
+                ? 'bg-blue-600 text-white border-blue-600'
+                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-blue-400'
+            }`}>
+            {opt.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Search Bar */}
       <form onSubmit={handleSearch} className="flex gap-3 mb-6">
         <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 focus-within:ring-2 focus-within:ring-blue-500">
-          <Search size={18} className="text-gray-400" />
+          <Search size={18} className="text-gray-400 flex-shrink-0" />
           <input
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
-            placeholder="Search exams..."
+            placeholder="Search exams, jobs..."
             className="flex-1 outline-none bg-transparent text-gray-900 dark:text-white placeholder-gray-400"
           />
           {searchInput && (
@@ -114,23 +179,29 @@ export default function ExamsPage() {
         </button>
       </form>
 
+      {/* Active Filter Chips */}
       {activeFilterCount > 0 && (
         <div className="flex flex-wrap gap-2 mb-6">
           {filters.category && <FilterChip label={`Category: ${filters.category}`} onRemove={() => setFilters(f => ({ ...f, category: undefined }))} />}
           {filters.qualification && <FilterChip label={`Qual: ${filters.qualification}`} onRemove={() => setFilters(f => ({ ...f, qualification: undefined }))} />}
           {filters.tag && <FilterChip label={filters.tag} onRemove={() => setFilters(f => ({ ...f, tag: undefined }))} />}
           {filters.trending && <FilterChip label="Trending" onRemove={() => setFilters(f => ({ ...f, trending: undefined }))} />}
-          <button onClick={() => setFilters({})} className="text-xs text-red-600 hover:underline px-2">Clear all</button>
+          {(filters as any).status && <FilterChip label={statusLabels[(filters as any).status]} onRemove={() => setFilters(f => ({ ...f, status: undefined }))} />}
+          <button onClick={() => { setFilters({}); setSearchInput(''); }} className="text-xs text-red-600 hover:underline px-2 font-medium">
+            Clear all
+          </button>
         </div>
       )}
 
       <div className="flex gap-8">
+        {/* Filters Sidebar — Desktop */}
         <aside className="hidden md:block w-64 flex-shrink-0">
           <div className="sticky top-24">
             <ExamFiltersPanel filters={filters} onChange={handleFilterChange} />
           </div>
         </aside>
 
+        {/* Mobile Filters Drawer */}
         {showFilters && (
           <div className="fixed inset-0 z-50 md:hidden">
             <div className="absolute inset-0 bg-black/50" onClick={() => setShowFilters(false)} />
@@ -144,16 +215,23 @@ export default function ExamsPage() {
           </div>
         )}
 
+        {/* Exam Grid */}
         <div className="flex-1 min-w-0">
           {loading && page === 1 ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => <div key={i} className="h-72 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse" />)}
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-80 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse" />
+              ))}
             </div>
           ) : exams.length === 0 ? (
-            <div className="text-center py-20">
+            <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
               <p className="text-5xl mb-4">🔍</p>
               <p className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No exams found</p>
-              <p className="text-gray-500 dark:text-gray-400">Try adjusting your filters or search terms</p>
+              <p className="text-gray-500 dark:text-gray-400 mb-4">Try a different filter or search term</p>
+              <button onClick={() => { setFilters({}); setSearchInput(''); }}
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition-colors">
+                Clear Filters
+              </button>
             </div>
           ) : (
             <>
