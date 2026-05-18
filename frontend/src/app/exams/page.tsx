@@ -51,7 +51,7 @@ export default function ExamsPage() {
     qualification: (searchParams.get('qualification') as any) || undefined,
     tag: searchParams.get('tag') || undefined,
     trending: searchParams.get('trending') === 'true' || undefined,
-    status: (searchParams.get('status') as ExamFilters['status']) || undefined,
+    status: (searchParams.get('status') as 'live' | 'upcoming' | 'expected' | 'closed' | 'result' | '') || undefined,
   });
 
   const [searchInput, setSearchInput] = useState(filters.search || '');
