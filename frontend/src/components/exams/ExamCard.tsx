@@ -23,7 +23,6 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 // Compute smart exam status from dates
 function getExamStatus(exam: Exam) {
-  const now = new Date();
   const appStart = exam.application_start ? new Date(exam.application_start) : null;
   const appEnd = exam.application_end ? new Date(exam.application_end) : null;
   const examDate = exam.exam_date ? new Date(exam.exam_date) : null;
