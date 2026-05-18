@@ -51,7 +51,7 @@ export default function ExamsPage() {
     qualification: (searchParams.get('qualification') as any) || undefined,
     tag: searchParams.get('tag') || undefined,
     trending: searchParams.get('trending') === 'true' || undefined,
-    status: (searchParams.get('status') as any) || undefined,
+    status: (searchParams.get('status') as ExamFilters['status']) || undefined,
   });
 
   const [searchInput, setSearchInput] = useState(filters.search || '');
@@ -127,7 +127,7 @@ export default function ExamsPage() {
         <p className="text-gray-600 dark:text-gray-400 text-sm">
           {loading ? 'Loading...' : `${total} exams found`}
           {filters.search && ` for "${filters.search}"`}
-          {(filters as any).status && ` · ${statusLabels[(filters as any).status] || ''}`}
+          {filters.status && ` · ${statusLabels[filters.status] || ''}`}
         </p>
       </div>
 
@@ -142,9 +142,9 @@ export default function ExamsPage() {
           { value: 'result', label: '🏆 Result Out' },
         ].map(opt => (
           <button key={opt.value}
-            onClick={() => handleFilterChange({ ...filters, status: opt.value as any })}
+            onClick={() => handleFilterChange({ ...filters, status: opt.value as ExamFilters['status'] })}
             className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all border ${
-              (filters as any).status === opt.value || (!(filters as any).status && opt.value === '')
+              filters.status === opt.value || (!filters.status && opt.value === '')
                 ? 'bg-blue-600 text-white border-blue-600'
                 : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-blue-400'
             }`}>
@@ -186,7 +186,7 @@ export default function ExamsPage() {
           {filters.qualification && <FilterChip label={`Qual: ${filters.qualification}`} onRemove={() => setFilters(f => ({ ...f, qualification: undefined }))} />}
           {filters.tag && <FilterChip label={filters.tag} onRemove={() => setFilters(f => ({ ...f, tag: undefined }))} />}
           {filters.trending && <FilterChip label="Trending" onRemove={() => setFilters(f => ({ ...f, trending: undefined }))} />}
-          {(filters as any).status && <FilterChip label={statusLabels[(filters as any).status]} onRemove={() => setFilters(f => ({ ...f, status: undefined }))} />}
+          {filters.status && <FilterChip label={statusLabels[filters.status]} onRemove={() => setFilters(f => ({ ...f, status: undefined }))} />}
           <button onClick={() => { setFilters({}); setSearchInput(''); }} className="text-xs text-red-600 hover:underline px-2 font-medium">
             Clear all
           </button>
