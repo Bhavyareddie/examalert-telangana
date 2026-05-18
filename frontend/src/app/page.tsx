@@ -9,6 +9,8 @@ import DailyQuiz from '@/components/home/DailyQuiz';
 import StatsBar from '@/components/home/StatsBar';
 import ExamCategories from '@/components/home/ExamCategories';
 
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'ExamAlert Telangana - Find All Competitive Exams',
   description: 'Discover TSPSC, Police, Banking, Railways, Teaching exams. Smart eligibility checker, AI assistant, and real-time notifications for Telangana students.',
