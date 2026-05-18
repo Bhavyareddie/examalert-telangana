@@ -28,7 +28,7 @@ function getExamStatus(exam: Exam) {
   const examDate = exam.exam_date ? new Date(exam.exam_date) : null;
   const resultDate = exam.result_date ? new Date(exam.result_date) : null;
 
-  if (resultDate && isPast(resultDate)) return 'result_out';
+  if (resultDate && isPast(resultDate) && resultDate.getFullYear() >= 2026) return 'result_out';
   if (examDate && isPast(examDate) && (!resultDate || isFuture(resultDate))) return 'exam_over';
   if (appEnd && isPast(appEnd)) return 'closed';
   if (appStart && isPast(appStart) && !appEnd) return 'closed';

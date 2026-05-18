@@ -33,7 +33,7 @@ function applyStatusFilter(query: any, status?: string) {
       .or(`application_end.lt.${today},exam_date.lt.${today},and(application_start.lt.${today},application_end.is.null,exam_date.is.null)`);
   }
   if (status === 'result') {
-    return query.not('result_date', 'is', null).lte('result_date', today);
+    return query.not('result_date', 'is', null).gte('result_date', '2026-01-01').lte('result_date', today);
   }
   return query;
 }
