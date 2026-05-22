@@ -31,7 +31,7 @@ async function fetchWebsiteText(url) {
 async function extractDatesWithAI(examName, websiteText) {
   if (!genAI || !websiteText) return null;
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     const prompt = `From this government website text, extract exam dates for "${examName}".
 Return ONLY a JSON object with these fields (use null if not found):
 {
